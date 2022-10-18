@@ -1,0 +1,62 @@
+import random
+
+def brute_force(l):
+    max = -99999
+    for i in range(0, len(l)):
+        tmp = 0
+        for j in range(i, len(l)):
+            tmp += l[j]
+            if tmp > max:
+                max = tmp
+                left = i
+                right = j
+
+    return max, left, right
+
+def max_sum(l, first, last):
+    if first < last:
+        mid = int((first + last)/2)
+        max_left, first_left, last_left = max_sum(l, first, mid)
+        max_right, first_right, last_right = max_sum(l, mid+1, last)
+
+        max_mid_1 = -999999999999999
+        tmp = 0
+        for i in range(mid, first-1, -1):
+            tmp += l[i]
+            if tmp > max_mid_1:
+                max_mid_1 = tmp
+                max_pos_1 = i
+
+        max_mid_2 = -999999999999999
+        tmp = 0
+        for i in range(mid+1, last+1):
+            tmp += l[i]
+            if tmp > max_mid_2:
+                max_mid_2 = tmp
+                max_pos_2 = i
+
+        max_mid = max_mid_2 + max_mid_1
+
+        if max_mid >= max_left and max_mid >= max_right:
+            return max_mid, max_pos_1, max_pos_2
+        if max_left >= max_mid and max_left >= max_right:
+            return max_left, first_left, last_left
+        if max_right >= max_mid and max_right >= max_left:
+            return max_right, first_right, last_right
+
+    else:
+        return l[first], first, first
+if __name__ == '__main__':
+    bound = 100
+    num = 1000
+    l = [-85, -18, -56, -56]
+    print(l)
+    print(brute_force(l))
+    print(max_sum(l, 0, len(l) - 1))
+    for j in range(100):
+        l = []
+        for i in range(num):
+            l.append(random.randint(-bound, bound))
+        print(l)
+        print(brute_force(l))
+        print(max_sum(l, 0, len(l) - 1))
